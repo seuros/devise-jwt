@@ -17,7 +17,6 @@ module Devise
   #
   # @see Warden::JWTAuth
   def self.jwt
-    Warden::JWTAuth.config.to_h
     yield(Devise::JWT.config)
     Devise::JWT.config.to_h
   end
@@ -64,7 +63,9 @@ module Devise
     setting :request_formats, {}
 
     def self.forward_to_warden(setting, value)
-      Warden::JWTAuth.config.send("#{setting}=", value)
+      default = Warden::JWTAuth.config.send("#{setting}")
+      Warden::JWTAuth.config.send("#{setting}=", value || default)
+      Warden::JWTAuth.config.send("#{setting}")
     end
   end
 end
